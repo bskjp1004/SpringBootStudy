@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,8 +38,33 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public BoardResponseDto getPost(Long id){
-        Optional<Board> board = Optional.ofNullable(boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)));
-        return BoardResponseDto.from(board.get());
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        return BoardResponseDto.from(board);
+    }
+
+    @Transactional
+    public BoardResponseDto updatePost(Long id, BoardRequestDto requestDto, User user){
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+        if (!Objects.equals(board.getPassword(), requestDto.getPassword())){
+            throw  new IllegalArgumentException("게시글 비밀번호가 일치하지 않습니다.");
+        }
+
+        board.update(requestDto.getTitle(), requestDto.getContent(), user);
+        return BoardResponseDto.from(board);
+    }
+
+    @Transactional
+    public String deletePost(Long id, BoardRequestDto requestDto){
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+
+        if (!Objects.equals(board.getPassword(), requestDto.getPassword())){
+            throw  new IllegalArgumentException("게시글 비밀번호가 일치하지 않습니다.");
+        }
+        boardRepository.deleteById(id);
+        return "게시글 삭제 성공";
     }
 }

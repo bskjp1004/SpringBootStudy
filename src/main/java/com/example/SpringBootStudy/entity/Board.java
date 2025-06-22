@@ -30,10 +30,12 @@ public class Board {
     private User user;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", updatable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    protected Board() {}
 
     @Builder
     public Board(String title, String content, String password, User user) {
@@ -42,6 +44,13 @@ public class Board {
         this.password = password;
         this.user = user;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void update(String title, String content, User user){
+        this.title = title;
+        this.content = content;
+        this.user = user;
         this.updatedAt = LocalDateTime.now();
     }
 

@@ -24,15 +24,20 @@ public class User {
     private boolean isActive = true;
 
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", updatable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    protected User() {}
 
     @Builder
-    private User(String username, String password) {
+    private User(String username, String password, boolean isActive) {
         this.username = username;
         this.password = password;
+        this.isActive = isActive;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public static User of(String username, String password){
