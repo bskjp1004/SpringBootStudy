@@ -27,8 +27,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        // ✅ 로그인 및 회원가입 요청은 토큰 검사 없이 통과
-        if (uri.startsWith("/api/signup") || uri.startsWith("/api/login")) {
+        // 기본페이지, 로그인, 회원가입 요청은 토큰 검사 없이 통과
+        if (uri.equals("/") ||
+            uri.startsWith("/api/signup") ||
+            uri.startsWith("/api/login")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -38,6 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write("{\"message\": \"토큰이 없습니다.\"}");
             return;
         }
@@ -49,6 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write("{\"message\": \"유효하지 않은 JWT 토큰입니다.\"}");
             return;
         }
