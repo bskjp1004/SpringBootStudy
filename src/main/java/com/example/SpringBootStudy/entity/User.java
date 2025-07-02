@@ -21,7 +21,7 @@ public class User {
     private String password;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean isActive;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -40,10 +40,15 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public static User of(String username, String password){
+    public static User of(String username, String password) {
+        return of(username, password, true);
+    }
+
+    public static User of(String username, String password, boolean isActive){
         return User.builder()
                 .username(username)
                 .password(password)
+                .isActive(isActive)
                 .build();
     }
 }
